@@ -1,6 +1,11 @@
 server:
   port: 8761
+
 eureka:
+  server:
+    enable-self-preservation: true  # Enable/Disable self-preservation mode to allow immediate removal of expired instances
+    eviction-interval-timer-in-ms: 2000  # Run eviction task every 2 second to remove timed-out instances (default is 60,000 ms)
+
   client:
     registerWithEureka: false
     fetchRegistry: false
@@ -8,5 +13,3 @@ eureka:
 spring:
   application:
     name: eureka-server
-
-
