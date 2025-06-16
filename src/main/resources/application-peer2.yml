@@ -1,0 +1,20 @@
+server.port: 8762
+
+spring:
+  application.name: eureka-peer2
+
+eureka:
+  server:
+    enable-self-preservation: true
+    eviction-interval-timer-in-ms: 2000
+
+  client:
+    enabled: true
+    refresh.enable: false
+    healthcheck.enabled: true  # Enables Spring Boot Actuator-based health check.
+    register-with-eureka: true   # Register itself with the Eureka server.
+    fetch-registry: true        # Fetch the registry of other services from Eureka.
+    registry-fetch-interval-seconds: 1  # Interval for registry fetches.
+    service-url:
+      defaultZone: http://eureka-peer1:8761/eureka/,http://eureka-peer3:8763/eureka/
+---

@@ -14,4 +14,4 @@ docker tag eureka-server:latest eureka-server:$TIMESTAMP
 docker build -t eureka-server:latest .
 
 #docker run --name eureka-server -p 8080:8080 -e DB_HOST=postgres --network database -d eureka-server
-docker run --name eureka-server --network=host -d eureka-server
+docker run --name eureka-server --network=host -e SPRING_PROFILES_ACTIVE=standalone -d eureka-server
