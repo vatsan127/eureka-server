@@ -1,28 +1,99 @@
-#Standalone Properties
-server.port: 8761
+# Eureka Server Configuration for Standalone Setup
+# This configuration sets up a single Eureka server instance
 
+# =============================================================================
+# SERVER CONFIGURATION
+# =============================================================================
+server:
+  port: 8761  # Default port for Eureka server
+
+# =============================================================================
+# ACTUATOR MANAGEMENT ENDPOINTS
+# =============================================================================
 management:
   endpoints:
     web:
       exposure:
-        include:
-          - "*"
+        include: "*"  # Expose all actuator endpoints for monitoring and management
   endpoint:
     health:
-      show-details: always
+      show-details: always  # Always show detailed health information
     info:
-      enabled: true
+      enabled: true  # Enable the info endpoint to display application information
 
+# =============================================================================
+# SPRING APPLICATION CONFIGURATION
+# =============================================================================
 spring:
-  config.activate.on-profile: standalone
-  application.name: eureka-server
+  application:
+    name: eureka-server  # Application name for the standalone Eureka server
 
+# =============================================================================
+# EUREKA SERVER CONFIGURATION
+# =============================================================================
 eureka:
   server:
-    enable-self-preservation: true  # Self-preservation mode to allow immediate removal of expired instances
-    eviction-interval-timer-in-ms: 2000  # Run eviction task every 2 second to remove timed-out instances (default is 60,000 ms)
+    # Enable self-preservation mode to prevent premature eviction of services
+    # In production, consider setting this to true; for development, false might be better
+    enable-self-preservation: false
 
-  instance:
+    # Interval (in milliseconds) for the eviction task that removes expired instances
+    eviction-interval-timer-in-ms: 10000
+
+    # Disable peer awareness since this is a standalone server
+    peer-awareness: false
+
+    # Expected number of renewals per minute (affects self-preservation threshold)
+    expected-client-renewal-interval-seconds: 30
+
+    # Response cache settings for better performance
+    response-cache-auto-expiration-in-seconds: 30
+    response-cache-update-interval-ms: 5000
+
+  # =============================================================================
+  # EUREKA CLIENT CONFIGURATION (disabled for standalone)
+  # =============================================================================
   client:
+    # Disable client functionality since this is a standalone server
+    enabled: false
+
+    # Do not register this server with itself
     register-with-eureka: false
+
+    # Do not fetch registry from other servers (there are none)
     fetch-registry: false
+
+    # Service URL pointing to itself (required even when not registering)
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+  # =============================================================================
+  # EUREKA INSTANCE CONFIGURATION
+  # =============================================================================
+  instance:
+    # Hostname for this instance
+    hostname: localhost
+
+    # Prefer IP address over hostname for service registration
+    prefer-ip-address: false
+
+    # Health check URL for this instance
+    health-check-url-path: /actuator/health
+
+    # Status page URL for this instance
+    status-page-url-path: /actuator/info
+
+# =============================================================================
+# LOGGING CONFIGURATION (Optional - for debugging)
+# =============================================================================
+logging:
+  level:
+    # Set to INFO for production, DEBUG for troubleshooting
+    com.netflix.eureka: INFO
+    com.netflix.discovery: INFO
+    # Root logging level
+    root: INFO
+
+  # Log pattern for better readability
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
