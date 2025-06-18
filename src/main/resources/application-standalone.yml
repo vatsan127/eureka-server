@@ -1,6 +1,18 @@
 #Standalone Properties
 server.port: 8761
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "*"
+  endpoint:
+    health:
+      show-details: always
+    info:
+      enabled: true
+
 spring:
   config.activate.on-profile: standalone
   application.name: eureka-server
@@ -14,4 +26,3 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
-

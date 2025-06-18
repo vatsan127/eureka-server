@@ -1,9 +1,9 @@
 #!/bin/bash
 
 echo "Stopping Running Container: "
-docker stop $(docker ps -a | grep eureka-server- | awk '{print $1}')
+docker stop $(docker ps -a | grep eureka-peer | awk '{print $1}')
 echo "Deleting Existing Container: "
-docker rm $(docker ps -a | grep eureka-server- | awk '{print $1}')
+docker rm $(docker ps -a | grep eureka-peer | awk '{print $1}')
 
 mvn clean install -DskipTests
 mkdir -p target/dependency
@@ -17,5 +17,10 @@ docker build -t eureka-server:latest .
 
 #docker run --name eureka-server -p 8080:8080 -e DB_HOST=postgres --network database -d eureka-server
 docker run --name eureka-peer1 --network=host -e SPRING_PROFILES_ACTIVE=peer1 -d eureka-server
+sleep 5
 docker run --name eureka-peer2 --network=host -e SPRING_PROFILES_ACTIVE=peer2 -d eureka-server
+sleep 5
 docker run --name eureka-peer3 --network=host -e SPRING_PROFILES_ACTIVE=peer3 -d eureka-server
+sleep 5
+
+echo "Applications Started"
