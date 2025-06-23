@@ -1,0 +1,47 @@
+# =============================================================================
+# EUREKA SERVER CONFIGURATION
+# Standalone setup for service discovery and registration
+# =============================================================================
+
+# Server port configuration
+server:
+  port: 8761
+
+# Application identity
+spring:
+  application:
+    name: eureka-server
+
+# Eureka server settings
+eureka:
+  server:
+    enable-self-preservation: false  # Disabled for development
+    eviction-interval-timer-in-ms: 10000  # Cleanup interval for expired instances
+    peer-awareness: false  # No peer nodes in standalone mode
+    expected-client-renewal-interval-seconds: 30  # Time between client renewals
+    #response-cache-auto-expiration-in-seconds: 30  # Cache TTL
+    #response-cache-update-interval-ms: 5000  # Cache update frequency
+
+  # Client configuration
+  client:
+    enabled: true  # Enable client features
+    register-with-eureka: true  # Self-registration enabled
+    fetch-registry: true  # Registry fetching enabled
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # Server endpoint
+
+  # Instance settings
+  instance:
+    prefer-ip-address: true  # Use IP instead of hostname
+
+# Actuator configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    info:
+      access: read_only
