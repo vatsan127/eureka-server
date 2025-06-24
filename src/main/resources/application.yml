@@ -22,7 +22,7 @@ spring:
 eureka:
   server:
     enable-self-preservation: false  # Disable self-preservation mode for development
-    eviction-interval-timer-in-ms: 2000  # Interval for evicting expired instances (2 seconds)
+    eviction-interval-timer-in-ms: 1000  # Interval for evicting expired instances (2 seconds)
 
   client:
     healthcheck.enabled: true
@@ -30,11 +30,6 @@ eureka:
     fetch-registry: false
     service-url:
       defaultZone: http://eureka-server/eureka/
-
-  instance:
-    prefer-ip-address: true  # Use IP address instead of hostname for registration
-    lease-renewal-interval-in-seconds: 30  # Standard heartbeat interval
-    lease-expiration-duration-in-seconds: 90  # Standard expiration duration
 
 # Logging configuration for debugging
 logging:

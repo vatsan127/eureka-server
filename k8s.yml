@@ -21,9 +21,9 @@ spec:
           image: eureka-server:latest
           ports:
             - containerPort: 8761
-          env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: standalone
+#          env:
+#            - name: SPRING_PROFILES_ACTIVE
+#              value: standalone
 ---
 # Service for Eureka Server
 apiVersion: v1
