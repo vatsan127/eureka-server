@@ -1,40 +1,7 @@
-# =============================================================================
-# EUREKA SERVER CONFIGURATION
-# Standalone setup for service discovery and registration
-# =============================================================================
-
-# Server port configuration
+# Eureka Server Configuration
 server:
   port: 8761
 
-# Application identity
-spring:
-  application:
-    name: eureka-server
-
-# Eureka server settings
-eureka:
-  server:
-    enable-self-preservation: false  # Disabled for development
-    eviction-interval-timer-in-ms: 10000  # Cleanup interval for expired instances
-    peer-awareness: false  # No peer nodes in standalone mode
-    expected-client-renewal-interval-seconds: 30  # Time between client renewals
-    #response-cache-auto-expiration-in-seconds: 30  # Cache TTL
-    #response-cache-update-interval-ms: 5000  # Cache update frequency
-
-  # Client configuration
-  client:
-    enabled: true  # Enable client features
-    register-with-eureka: true  # Self-registration enabled
-    fetch-registry: true  # Registry fetching enabled
-    service-url:
-      defaultZone: http://localhost:8761/eureka/  # Server endpoint
-
-  # Instance settings
-  instance:
-    prefer-ip-address: true  # Use IP instead of hostname
-
-# Actuator configuration
 management:
   endpoints:
     web:
@@ -45,3 +12,32 @@ management:
       show-details: always
     info:
       access: read_only
+
+# Spring application configuration
+spring:
+  application:
+    name: eureka-server
+
+# Eureka server and client configuration
+eureka:
+  server:
+    enable-self-preservation: false  # Disable self-preservation mode for development
+    eviction-interval-timer-in-ms: 2000  # Interval for evicting expired instances (2 seconds)
+
+  client:
+    healthcheck.enabled: true
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://eureka-server/eureka/
+
+  instance:
+    prefer-ip-address: true  # Use IP address instead of hostname for registration
+    lease-renewal-interval-in-seconds: 30  # Standard heartbeat interval
+    lease-expiration-duration-in-seconds: 90  # Standard expiration duration
+
+# Logging configuration for debugging
+logging:
+  level:
+    com.netflix.eureka: INFO
+    com.netflix.discovery: INFO

@@ -18,8 +18,6 @@ echo "Tagging Old Binary with: $TIMESTAMP"
 docker tag eureka-server:latest eureka-server:$TIMESTAMP 2>/dev/null || true
 docker build -t eureka-server:latest .
 
-echo "pwd - $(pwd)"
-
 # Apply k8s config and force restart
 kubectl apply -f ./k8s.yml
 kubectl rollout restart deployment eureka-server

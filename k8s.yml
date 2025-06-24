@@ -31,10 +31,11 @@ kind: Service
 metadata:
   name: eureka-server
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
     - port: 8761
       targetPort: 8761
       protocol: TCP
+      nodePort: 30050
   selector:
     app: eureka-server
