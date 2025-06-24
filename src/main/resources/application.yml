@@ -21,11 +21,11 @@ spring:
 # Eureka server and client configuration
 eureka:
   server:
-    enable-self-preservation: false  # Disable self-preservation mode for development
-    eviction-interval-timer-in-ms: 1000  # Interval for evicting expired instances (2 seconds)
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 1000
 
   client:
-    healthcheck.enabled: true
+    refresh.enable: false
     register-with-eureka: false
     fetch-registry: false
     service-url:
