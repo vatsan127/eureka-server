@@ -27,7 +27,7 @@ eureka:
     refresh.enable: false
     register-with-eureka: true
     fetch-registry: true
-    registry-fetch-interval-seconds: 30
+    registry-fetch-interval-seconds: 5
     healthcheck.enabled: true
     service-url:
       defaultZone: http://eureka-server-peer2:8761/eureka/

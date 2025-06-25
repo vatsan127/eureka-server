@@ -18,6 +18,10 @@ echo "Tagging Old Binary with: $TIMESTAMP"
 docker tag eureka-server:latest eureka-server:$TIMESTAMP 2>/dev/null || true
 docker build -t eureka-server:latest .
 
+# Delete existing Kubernetes deployments
+kubectl delete -f ./k8s-peer1.yml
+kubectl delete -f ./k8s-peer2.yml
+
 # Apply k8s config and force restart
 kubectl apply -f ./k8s-peer1.yml
 kubectl apply -f ./k8s-peer2.yml
