@@ -1,0 +1,41 @@
+# Deployment for Eureka Server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eureka-server-peer1
+  labels:
+    app: eureka-server-peer1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eureka-server-peer1
+  template:
+    metadata:
+      labels:
+        app: eureka-server-peer1
+    spec:
+      containers:
+        - name: eureka-server-peer1
+          imagePullPolicy: Never
+          image: eureka-server:latest
+          ports:
+            - containerPort: 8761
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: peer1
+---
+# Service for Eureka Server
+apiVersion: v1
+kind: Service
+metadata:
+  name: eureka-server-peer1
+spec:
+  type: NodePort
+  ports:
+    - port: 8761
+      targetPort: 8761
+      protocol: TCP
+      nodePort: 30050
+  selector:
+    app: eureka-server-peer1

@@ -1,111 +1,52 @@
-# Eureka Server Configuration for Cluster Setup (Peer 2)
-# This configuration sets up a Eureka server as part of a 3-node cluster
-
-# =============================================================================
-# SERVER CONFIGURATION
-# =============================================================================
 server:
-  port: 8762  # Port for this Eureka server instance (Peer 2)
+  port: 8761
 
-# =============================================================================
-# ACTUATOR MANAGEMENT ENDPOINTS
-# =============================================================================
 management:
   endpoints:
     web:
       exposure:
-        include: "*"  # Expose all actuator endpoints for monitoring and management
+        include: "*"
   endpoint:
     health:
-      show-details: always  # Always show detailed health information
+      show-details: always
     info:
-      enabled: true  # Enable the info endpoint to display application information
+      access: read_only
 
-# =============================================================================
-# SPRING APPLICATION CONFIGURATION
-# =============================================================================
 spring:
   application:
-    name: eureka-peer2  # Unique name for this Eureka server instance
+    name: eureka-server-peer2
 
-# =============================================================================
-# EUREKA SERVER CONFIGURATION
-# =============================================================================
 eureka:
   server:
-    # Self-preservation mode prevents Eureka from evicting services during network partitions
-    enable-self-preservation: true
-    
-    # Interval (in milliseconds) for the eviction task that removes expired instances
-    eviction-interval-timer-in-ms: 2000
-    
-    # Enable peer awareness for cluster setup
-    peer-awareness: true
-    
-    # Synchronize registry information between peers more frequently
-    sync-when-timestamp-differs: true
-    
-    # Maximum number of threads for peer replication
-    max-threads-for-peer-replication: 20
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 5000
+    #peer-eureka-nodes-update-interval-ms: # Interval to refresh the list of peer nodes
+    #peer-eureka-status-refresh-time-interval-ms: # Interval to check peer node status
 
-  # =============================================================================
-  # EUREKA CLIENT CONFIGURATION (for peer-to-peer communication)
-  # =============================================================================
   client:
-    # Enable client functionality for peer-to-peer communication
-    enabled: true
-    
-    # Disable registry refresh during startup to avoid conflicts
-    refresh:
-      enable: false
-    
-    # Enable health check integration with Spring Boot Actuator
-    healthcheck:
-      enabled: true
-    
-    # Register this Eureka server with other peers in the cluster
+    refresh.enable: false
     register-with-eureka: true
-    
-    # Fetch registry information from other peers
     fetch-registry: true
-    
-    # Interval (in seconds) for fetching registry updates from peers
-    registry-fetch-interval-seconds: 1
-    
-    # Interval (in seconds) for sending heartbeats to peers
-    lease-renewal-interval-in-seconds: 1
-    
-    # Time (in seconds) after which a peer is considered down if no heartbeat received
-    lease-expiration-duration-in-seconds: 2
-    
-    # Service URLs for other Eureka servers in the cluster
+    registry-fetch-interval-seconds: 30
+    healthcheck.enabled: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/,http://localhost:8763/eureka/
-    
-    # Prefer IP address over hostname for peer communication
-    prefer-ip-address: true
-    
-    # Instance configuration for this Eureka server
-    instance:
-      # Hostname for this instance
-      #hostname: localhost
-      
-      # Prefer IP address for service registration
-      prefer-ip-address: true
-      
-      # Faster heartbeat interval for cluster setup
-      lease-renewal-interval-in-seconds: 1
-      
-      # Shorter expiration time for faster failure detection
-      lease-expiration-duration-in-seconds: 2
-      
-      # Instance ID to uniquely identify this peer
-      #instance-id: ${spring.application.name}:${server.port}
+      defaultZone: http://eureka-server-peer1:8761/eureka/
 
-# =============================================================================
-# LOGGING CONFIGURATION (Optional - for debugging cluster issues)
-# =============================================================================
+  instance:
+    prefer-ip-address: true
+    #    hostname: ${HOSTNAME}
+    #    instance-id: ${HOSTNAME}
+
+    # Lease configuration
+    lease-renewal-interval-in-seconds: 1 # Interval at which service instance sends a heartbeat to Eureka server
+    lease-expiration-duration-in-seconds: 2 # Interval  Eureka server waits before marking a service as DOWN if no heartbeat is received
+
+    # Health check
+    health-check-url-path: /actuator/health
+    status-page-url-path: /actuator/info
+
+# Logging configuration for debugging
 logging:
   level:
-    com.netflix.eureka: DEBUG  # Enable debug logging for Eureka
-    com.netflix.discovery: DEBUG  # Enable debug logging for service discovery
+    com.netflix.eureka: INFO
+    com.netflix.discovery: INFO

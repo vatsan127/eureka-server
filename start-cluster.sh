@@ -1,26 +1,23 @@
 #!/bin/bash
 
-echo "Stopping Running Container: "
-docker stop $(docker ps -a | grep eureka-peer | awk '{print $1}')
-echo "Deleting Existing Container: "
-docker rm $(docker ps -a | grep eureka-peer | awk '{print $1}')
+# Connect to Minikube's Docker daemon
+eval $(minikube -p minikube docker-env)
 
+echo "Stopping Running Container: $(docker stop eureka-server 2>/dev/null || true)"
+echo "Deleting Existing Container: $(docker rm eureka-server 2>/dev/null || true)"
+
+# Build the application
 mvn clean install -DskipTests
 mkdir -p target/dependency
 cd target/dependency && jar -xf ../*.jar && cd -
 
+# Tag and build Docker image
 TIMESTAMP=$(date +"%Y%m%d%H%M%S")
 echo "Tagging Old Binary with: $TIMESTAMP"
 
-docker tag eureka-server:latest eureka-server:$TIMESTAMP
+docker tag eureka-server:latest eureka-server:$TIMESTAMP 2>/dev/null || true
 docker build -t eureka-server:latest .
 
-#docker run --name eureka-server -p 8080:8080 -e DB_HOST=postgres --network database -d eureka-server
-docker run --name eureka-peer1 --network=host -e SPRING_PROFILES_ACTIVE=peer1 -d eureka-server
-sleep 5
-docker run --name eureka-peer2 --network=host -e SPRING_PROFILES_ACTIVE=peer2 -d eureka-server
-sleep 5
-docker run --name eureka-peer3 --network=host -e SPRING_PROFILES_ACTIVE=peer3 -d eureka-server
-sleep 5
-
-echo "Applications Started"
+# Apply k8s config and force restart
+kubectl apply -f ./k8s-peer1.yml
+kubectl apply -f ./k8s-peer2.yml
